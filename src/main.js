@@ -2,10 +2,6 @@
 const historyPrev = "tb.history.0";
 const historyPrevPrev = "tb.history.1";
 
-function parseDomainFromUrl(url) {
-  return (new URL(url)).hostname;
-}
-
 /**
  * Cycles `latestDomain` into the retained 2 entries of
  * browser history, popping the oldest entry of the 2 
@@ -18,11 +14,6 @@ function advanceHistory(latestDomain) {
   const prevValue = window.localStorage.getItem(historyPrev);
   window.localStorage.setItem(historyPrevPrev, prevValue);
   window.localStorage.setItem(historyPrev, latestDomain);
-}
-
-function setLatestUrl(url) {
-  const domain = parseDomainFromUrl(url);
-  advanceHistory(domain);
 }
 
 /**
@@ -41,9 +32,7 @@ function alertUser() {
   ];
 
   const randIndex = Math.floor(Math.random() * messages.length);
-  console.log(`chose index ${randIndex} from options ${messages.length}`);
   const randMsg = messages[randIndex];
-  console.log('sending message ' + randMsg);
   alert(randMsg);
 }
 
@@ -57,34 +46,30 @@ function didWatchTooMuchYouTube() {
     window.localStorage.getItem(historyPrev),
     window.localStorage.getItem(historyPrevPrev),
   ];
-  console.log(`DEBUG: ${recentHistory}`);
 
   return recentHistory.reduce((accumulator, value) => {
-    console.log(`acc is ${accumulator}`);
-    accumulator = accumulator &&
-      (value.includes('youtube.com') || value.includes('youtu.be'));
-    console.log(`returning ${accumulator}`);
+    // only count /watch URLs so user can actually watch
+    // a video before counter starts going up
+    accumulator = accumulator && value.includes('youtube.com/watch');
     return accumulator;
   }, true);
 }
 
 function main() {
-  setLatestUrl(window.location.href);
-  console.log('DEBUG: about to check');
+  // do check first so that alert is triggered on
+  // (not before) 3rd youtube link
   if (didWatchTooMuchYouTube()) {
-    console.log('alert???');
     alertUser();
   }
+  advanceHistory(window.location.href);
 }
 
 // I cant believe this is the only way to "listen" for URL changes
 // (╯°□°)╯︵ ┻━┻ 
 let oldLocation = location.href;
 setInterval(function() {
-     if(location.href != oldLocation) {
-          // do your action
-       console.log('url change?');
-       main();
-          oldLocation = location.href
-     }
-}, 2000); // check every second
+  if (location.href != oldLocation) {
+    main();
+    oldLocation = location.href
+  }
+}, 2000); // check every 2 seconds
