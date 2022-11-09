@@ -14,7 +14,6 @@ function parseDomainFromUrl(url) {
  * latestDomain - str. domain name of the URL that was last visited
  */
 function advanceHistory(latestDomain) {
-
   // use window.localStorage MDN browser object to hold state
   const prevValue = window.localStorage.getItem(historyPrev);
   window.localStorage.setItem(historyPrevPrev, prevValue);
@@ -42,24 +41,29 @@ function alertUser() {
   ];
 
   const randIndex = Math.floor(Math.random() * messages.length);
+  console.log(`chose index ${randIndex} from options ${messages.length}`);
   const randMsg = messages[randIndex];
+  console.log('sending message ' + randMsg);
   alert(randMsg);
 }
 
 /**
- * Returns `true` if the last 2 domains visited were
+ * Returns `true` if the last 2 domains visited
+ * (within current tab session) were
  * YouTube domains, else `false`
  */
 function didWatchTooMuchYouTube() {
   const recentHistory = [
-    window.localStorage.get(historyPrev),
-    window.localStorage.get(historyPrevPrev),
+    window.localStorage.getItem(historyPrev),
+    window.localStorage.getItem(historyPrevPrev),
   ];
   console.log(`DEBUG: ${recentHistory}`);
 
-  return recent.reduce((accumulator, value) => {
+  return recentHistory.reduce((accumulator, value) => {
+    console.log(`acc is ${accumulator}`);
     accumulator = accumulator &&
       (value.includes('youtube.com') || value.includes('youtu.be'));
+    console.log(`returning ${accumulator}`);
     return accumulator;
   }, true);
 }
@@ -68,9 +72,19 @@ function main() {
   setLatestUrl(window.location.href);
   console.log('DEBUG: about to check');
   if (didWatchTooMuchYouTube()) {
+    console.log('alert???');
     alertUser();
   }
 }
 
-console.log('DEBUG: we starting');
-main();
+// I cant believe this is the only way to "listen" for URL changes
+// (╯°□°)╯︵ ┻━┻ 
+let oldLocation = location.href;
+setInterval(function() {
+     if(location.href != oldLocation) {
+          // do your action
+       console.log('url change?');
+       main();
+          oldLocation = location.href
+     }
+}, 2000); // check every second
