@@ -6,14 +6,13 @@
   "description": "Tries to stop you from watching more than 2 YouTube videos in a row.",
 
   "icons": {
-    "48": "icons/bouncer-48.png"
+    "48": "icons/bouncer-48.jpg"
   },
 
   "content_scripts": [
     {
-      "matches": ["*://*.youtube.com/*"],
+      "matches": ["*://*.*/*"],
       "js": ["src/main.js"]
     }
   ]
-
 }
