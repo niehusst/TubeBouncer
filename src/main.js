@@ -15,10 +15,10 @@ function parseDomainFromUrl(url) {
  */
 function advanceHistory(latestDomain) {
 
-  // use localStorage MDN browser object to hold state
-  const prevValue = localStorage.getItem(historyPrev);
-  localStorage.setItem(historyPrevPrev, prevValue);
-  localStorage.setItem(historyPrev, latestDomain);
+  // use window.localStorage MDN browser object to hold state
+  const prevValue = window.localStorage.getItem(historyPrev);
+  window.localStorage.setItem(historyPrevPrev, prevValue);
+  window.localStorage.setItem(historyPrev, latestDomain);
 }
 
 function setLatestUrl(url) {
@@ -52,21 +52,25 @@ function alertUser() {
  */
 function didWatchTooMuchYouTube() {
   const recentHistory = [
-    localStorage.get(historyPrev),
-    localStorage.get(historyPrevPrev),
+    window.localStorage.get(historyPrev),
+    window.localStorage.get(historyPrevPrev),
   ];
+  console.log(`DEBUG: ${recentHistory}`);
 
   return recent.reduce((accumulator, value) => {
-    accumulator = value.includes('youtube.com') || value.includes('youtu.be');
+    accumulator = accumulator &&
+      (value.includes('youtube.com') || value.includes('youtu.be'));
     return accumulator;
-  });
+  }, true);
 }
 
 function main() {
   setLatestUrl(window.location.href);
+  console.log('DEBUG: about to check');
   if (didWatchTooMuchYouTube()) {
     alertUser();
   }
 }
 
+console.log('DEBUG: we starting');
 main();
