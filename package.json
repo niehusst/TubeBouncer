@@ -1,0 +1,7 @@
+{
+  "name": "tubebouncer",
+  "description": "dev release automation",
+  "dependencies": {
+    "web-ext": "^7.3.1"
+  }
+}
