@@ -1,0 +1,33 @@
+name: Release Firefox extension
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+      - id: info
+        uses: niehusst/shared-actions/get-release-info@dist
+      - run: npm ci
+      - id: build
+        run: |-
+          npx web-ext sign --api-key=${{ secrets.AMO_JWT_ISSUER }} --api-secret=${{ secrets.AMO_JWT_SECRET }}
+          echo "xpi-file=$(find web-ext-artifacts/ -name "*.xpi")" >> $GITHUB_OUTPUT
+      - uses: niehusst/shared-actions/release-github@dist
+        with:
+          owner: niehusst
+          repo: TubeBouncer
+          name: ${{ steps.info.outputs.version }}
+          tag: ${{ steps.info.outputs.tag }}
+          body: ${{ steps.info.outputs.changelog_base64 }}
+          assets: ${{ steps.build.outputs.xpi-file }}
+  
