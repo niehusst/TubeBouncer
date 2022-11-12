@@ -30,6 +30,6 @@ jobs:
         with:
           name: ${{ steps.info.outputs.version }}
           tag: ${{ steps.info.outputs.tag }}
-          body: ${{ steps.info.outputs.changelog_base64 }}
+          body_base64: ${{ steps.info.outputs.changelog_base64 }}
           assets: ${{ steps.build.outputs.xpi-file }}
   
