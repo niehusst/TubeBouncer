@@ -23,7 +23,7 @@ function advanceHistory(latestDomain) {
 function alertUser() {
   // motivational quotes
   const messages = [
-    'touch grass',
+    'touch grass, nerd!',
     'youre wasting your life!',
     'get off your ass and do something useful',
     'stop watching YouTube and notice the killer clown behind you',
