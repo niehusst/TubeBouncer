@@ -22,14 +22,23 @@ jobs:
       - uses: ./.github/actions/bump-ext-version
         with:
           new-version: ${{ steps.info.outputs.version }}
-      - id: build
-        run: |-
-          npx web-ext sign --api-key=${{ secrets.AMO_JWT_ISSUER }} --api-secret=${{ secrets.AMO_JWT_SECRET }}
-          echo "xpi-file=$(find web-ext-artifacts/ -name "*.xpi")" >> $GITHUB_OUTPUT
-      - uses: niehusst/shared-actions/release-github@dist
+      - id: draft-release
+        uses: niehusst/shared-actions/release-github@dist
         with:
           name: ${{ steps.info.outputs.version }}
           tag: ${{ steps.info.outputs.tag }}
           body_base64: ${{ steps.info.outputs.changelog_base64 }}
-          assets: ${{ steps.build.outputs.xpi-file }}
+          draft: true
+      - id: build
+        run: |-
+          npx web-ext sign --api-key=${{ secrets.AMO_JWT_ISSUER }} --api-secret=${{ secrets.AMO_JWT_SECRET }}
+          echo "xpi-file=$(find web-ext-artifacts/ -name "*.xpi")" >> $GITHUB_OUTPUT
   
+      - name: finalize release
+        uses: niehusst/shared-actions/release-github@dist
+        with:
+          release_id: ${{ steps.draft-release.outputs.id }}
+          name: ${{ steps.info.outputs.version }}
+          tag: ${{ steps.info.outputs.tag }}
+          assets: ${{ steps.build.outputs.xpi-file }}
+          draft: false
