@@ -19,6 +19,9 @@ jobs:
       - id: info
         uses: niehusst/shared-actions/get-release-info@dist
       - run: npm ci
+      - uses: ./.github/actions/bump-ext-version
+        with:
+          new-version: ${{ steps.info.outputs.version }}
       - id: build
         run: |-
           npx web-ext sign --api-key=${{ secrets.AMO_JWT_ISSUER }} --api-secret=${{ secrets.AMO_JWT_SECRET }}
