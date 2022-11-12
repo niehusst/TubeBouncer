@@ -14,20 +14,35 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: main
+          ref: ${{ github.ref }}
+          fetch-depth: 0
       - id: info
         uses: niehusst/shared-actions/get-release-info@dist
       - run: npm ci
+      - uses: ./.github/actions/bump-ext-version
+        with:
+          new-version: ${{ steps.info.outputs.version }}
+      - id: draft-release
+        uses: niehusst/shared-actions/release-github@dist
+        with:
+          name: ${{ steps.info.outputs.version }}
+          tag: ${{ steps.info.outputs.tag }}
+          body_base64: ${{ steps.info.outputs.changelog_base64 }}
+          draft: true
       - id: build
         run: |-
           npx web-ext sign --api-key=${{ secrets.AMO_JWT_ISSUER }} --api-secret=${{ secrets.AMO_JWT_SECRET }}
           echo "xpi-file=$(find web-ext-artifacts/ -name "*.xpi")" >> $GITHUB_OUTPUT
-      - uses: niehusst/shared-actions/release-github@dist
+  
+      - name: finalize release
+        uses: niehusst/shared-actions/release-github@dist
         with:
-          owner: niehusst
-          repo: TubeBouncer
+          release_id: ${{ steps.draft-release.outputs.id }}
           name: ${{ steps.info.outputs.version }}
           tag: ${{ steps.info.outputs.tag }}
-          body: ${{ steps.info.outputs.changelog_base64 }}
           assets: ${{ steps.build.outputs.xpi-file }}
-  
+          draft: false
+      - uses: niehusst/shared-actions/git-push@dist
+        with:
+          file_pattern: manifest.json
+          commit_message: 'ci: bump manifest version [ci skip]'

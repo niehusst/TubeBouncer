@@ -1,0 +1,11 @@
+name: bump-ext-version
+description: update the version in the manifest.json file from input
+
+inputs:
+  new-version:
+    description: new version number to write to manifest.json
+    required: true
+
+runs:
+  using: node16
+  main: run.js

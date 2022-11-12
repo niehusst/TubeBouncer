@@ -2,6 +2,7 @@
   "name": "tubebouncer",
   "description": "dev release automation",
   "dependencies": {
+    "@actions/core": "^1.10.0",
     "web-ext": "^7.3.1"
   }
 }
