@@ -7,5 +7,5 @@ This is purely to help me not binge watch youtube as often and is not really int
 
 ## Installation
 
-Download .xpi file from GitHub release, then navigate to [about:addons](about:addons) in your Firefox browser.
+Download .xpi file from the latest GitHub release, then navigate to [about:addons](about:addons) in your Firefox browser.
 Click the cog in the top right, then select "Install Add-on from file.." and choose the .xpi file you downloaded.
