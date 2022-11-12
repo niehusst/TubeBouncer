@@ -42,3 +42,7 @@ jobs:
           tag: ${{ steps.info.outputs.tag }}
           assets: ${{ steps.build.outputs.xpi-file }}
           draft: false
+      - uses: niehusst/shared-actions/git-push@dist
+        with:
+          file_pattern: manifest.json
+          commit_message: 'ci: bump manifest version [ci skip]'
