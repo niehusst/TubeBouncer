@@ -28,8 +28,6 @@ jobs:
           echo "xpi-file=$(find web-ext-artifacts/ -name "*.xpi")" >> $GITHUB_OUTPUT
       - uses: niehusst/shared-actions/release-github@dist
         with:
-          owner: niehusst
-          repo: TubeBouncer
           name: ${{ steps.info.outputs.version }}
           tag: ${{ steps.info.outputs.tag }}
           body: ${{ steps.info.outputs.changelog_base64 }}
