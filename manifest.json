@@ -1,18 +1,1 @@
-{
-  "manifest_version": 2,
-  "name": "TubeBouncer",
-  "version": "1.0",
-
-  "description": "Tries to stop you from watching more than 2 YouTube videos in a row.",
-
-  "icons": {
-    "48": "icons/bouncer-48.jpg"
-  },
-
-  "content_scripts": [
-    {
-      "matches": ["*://*/*"],
-      "js": ["src/main.js"]
-    }
-  ]
-}
+{"manifest_version":2,"name":"TubeBouncer","version":"1.0.1","description":"Tries to stop you from watching more than 2 YouTube videos in a row.","icons":{"48":"icons/bouncer-48.jpg"},"content_scripts":[{"matches":["*://*/*"],"js":["src/main.js"]}]}
