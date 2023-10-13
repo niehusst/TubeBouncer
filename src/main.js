@@ -42,6 +42,9 @@ function alertUser() {
  * YouTube domains, else `false`
  */
 function didWatchTooMuchYouTube() {
+  // TEMP: dont watch any youtube!
+  return window.location.href.includes('youtube.com');
+
   const recentHistory = [
     window.localStorage.getItem(historyPrev),
     window.localStorage.getItem(historyPrevPrev),
