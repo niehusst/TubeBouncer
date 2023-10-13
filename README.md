@@ -15,3 +15,4 @@ Click the cog in the top right, then select "Install Add-on from file.." and cho
 There is a manual dispatch GitHub Action to automatically bump the extension version and release it to github and AMO [here](https://github.com/niehusst/TubeBouncer/actions/workflows/release.yml). The next version number is automatically deduced based on commit messages since the previous release following the conventional commits guidelines.
 
 It is recommended to always run the release automation from `main`, but it should also work for any other branch as well.
+
