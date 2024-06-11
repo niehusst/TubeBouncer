@@ -3,7 +3,6 @@ const intervalTime = 2000; // 2s
 const DATE_STORAGE_KEY = "date_key";
 const TIME_SPENT_STORAGE_KEY = "time_spent_key";
 
-oops }
 
 function navigateAway() {
   window.location.href = "https://en.wikipedia.org/wiki/Stop_sign#/media/File:Vienna_Convention_road_sign_B2a.svg";
