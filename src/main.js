@@ -58,7 +58,7 @@ async function main() {
   await incrementWatchTime();
 
   // gtfo if on yt and already watched too much
-  if (isOnYoutube() and (await didWatchTooMuchYouTube())) {
+  if (isOnYoutube() && (await didWatchTooMuchYouTube())) {
     navigateAway();
   }
 }
