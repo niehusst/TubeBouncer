@@ -1,7 +1,7 @@
 # TubeBouncer
 Firefox browser extension that tries to stop you from watching too much YouTube.
 
-After you've watched 2 youtube videos in a row and start a 3rd one, an alert motivates you to do something else. This alert can just be closed, and it's very simple to game the system, so this is not meant to be a hard stop (like a child lock), in case you were intentionally watching many youtube videos in a row.
+After you've been on the YouTube site (presumably watching videos) for 1 hour in any given day, you will be redirected to a different site.
 
 This is purely to help me not binge watch youtube as often and is not really intended to be production quality (still can't believe `setInterval` is the only way to check for changes to `location.href`...)
 
