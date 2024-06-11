@@ -1,4 +1,4 @@
-name: 'PR title check'
+name: 'PR CI check'
 
 on:
     pull_request:
@@ -11,3 +11,12 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - uses: niehusst/shared-actions/pr-title-check@dist
+
+    lint:
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            - uses: actions/checkout@v3
+            - run: npm ci
+            - run: npm run lint
+
