@@ -1,78 +1,75 @@
-// TODO: isolate tab history via session id??
-const historyPrev = "tb.history.0";
-const historyPrevPrev = "tb.history.1";
+const oneHourMs = 1000 * 60 * 60;
+const intervalTime = 2000; // 2s
+const DATE_STORAGE_KEY = "date_key";
+const TIME_SPENT_STORAGE_KEY = "time_spent_key";
 
-/**
- * Cycles `latestDomain` into the retained 2 entries of
- * browser history, popping the oldest entry of the 2 
- * from storage.
- *
- * latestDomain - str. domain name of the URL that was last visited
- */
-function advanceHistory(latestDomain) {
-  // use window.localStorage MDN browser object to hold state
-  const prevValue = window.localStorage.getItem(historyPrev);
-  window.localStorage.setItem(historyPrevPrev, prevValue);
-  window.localStorage.setItem(historyPrev, latestDomain);
+function navigateAway() {
+  window.location.href = "https://en.wikipedia.org/wiki/Stop_sign#/media/File:Vienna_Convention_road_sign_B2a.svg";
 }
 
-/**
- * Give the user an `alert` to remind them not to waste their
- * life
- */
-function alertUser() {
-  // motivational quotes
-  const messages = [
-    'touch grass, nerd!',
-    'youre wasting your life!',
-    'get off your ass and do something useful',
-    'stop watching YouTube and notice the killer clown behind you',
-    'if you dont stop watching YouTube, your incognito browser history will be sent to all your contacts',
-    'youve lost 200 brain cells in the past hour [citation needed]',
-  ];
 
-  const randIndex = Math.floor(Math.random() * messages.length);
-  const randMsg = messages[randIndex];
-  alert(randMsg);
-}
-
-/**
- * Returns `true` if the last 2 domains visited
- * (within current tab session) were
- * YouTube domains, else `false`
- */
-function didWatchTooMuchYouTube() {
-  // TEMP: dont watch any youtube!
+function isOnYoutube() {
   return window.location.href.includes('youtube.com');
-
-  const recentHistory = [
-    window.localStorage.getItem(historyPrev),
-    window.localStorage.getItem(historyPrevPrev),
-  ];
-
-  return recentHistory.reduce((accumulator, value) => {
-    // only count /watch URLs so user can actually watch
-    // a video before counter starts going up
-    accumulator = accumulator && value.includes('youtube.com/watch');
-    return accumulator;
-  }, true);
 }
 
-function main() {
-  // do check first so that alert is triggered on
-  // (not before) 3rd youtube link
-  if (didWatchTooMuchYouTube()) {
-    alertUser();
-  }
-  advanceHistory(window.location.href);
+function getCurrentDate() {
+  const d = new Date();
+  return `${d.getDate()}-${d.getMonth()}-${d.getFullYear()}`;
 }
 
-// I cant believe this is the only way to "listen" for URL changes
-// (╯°□°)╯︵ ┻━┻ 
-let oldLocation = location.href;
-setInterval(function() {
-  if (location.href != oldLocation) {
-    main();
-    oldLocation = location.href
+async function updateStoredDate() {
+  const today = getCurrentDate();
+  if (await browser.storage.local.get(DATE_STORAGE_KEY) !== today) {
+    await browser.storage.local.set({
+      DATE_STORAGE_KEY: today,
+      TIME_SPENT_STORAGE_KEY: 0,
+    });
   }
-}, 2000); // check every 2 seconds
+}
+
+async function incrementWatchTime() {
+  // could check if today, but should always be today due to execution order
+  // in main
+  if (isOnYoutube()) {
+    let watchTime = await browser.storage.local.get(TIME_SPENT_STORAGE_KEY);
+    watchTime += intervalTime;
+    await browser.storage.local.set({
+      TIME_SPENT_STORAGE_KEY: watchTime,
+    });
+  }
+}
+
+/**
+ * Returns `true` if a window with a location matching
+ * "youtube.com" has been focused for 1 hour or more during
+ * this day. Else `false`.
+ */
+async function didWatchTooMuchYouTube() {
+  const youtubeWatched = await browser.storage.local.get(TIME_SPENT_STORAGE_KEY);
+  return youtubeWatched >= oneHourMs;
+}
+
+/**
+ * main logic body. intended to be run on an interval
+ */
+async function main() {
+  await updateStoredDate();
+
+  await incrementWatchTime();
+
+  // gtfo if on yt and already watched too much
+  if (isOnYoutube() and (await didWatchTooMuchYouTube())) {
+    navigateAway();
+  }
+}
+
+/*
+ * on every interval,
+ * if date stored != today, set eq today and reset time spent count
+ * if location is youtub.e, add $interval to curr time spent on page in store
+ *
+ * when t_spent > 1h, nav away from youtube
+ */
+setInterval(() => {
+  main();
+}, intervalTime);
