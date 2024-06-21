@@ -19,10 +19,11 @@ function getCurrentDate() {
 
 async function updateStoredDate() {
   const today = getCurrentDate();
-  if (await browser.storage.local.get(DATE_STORAGE_KEY) !== today) {
+  const savedDate = await browser.storage.local.get(DATE_STORAGE_KEY);
+  if (savedDate[DATE_STORAGE_KEY] !== today) {
     await browser.storage.local.set({
-      DATE_STORAGE_KEY: today,
-      TIME_SPENT_STORAGE_KEY: 0,
+      [DATE_STORAGE_KEY]: today,
+      [TIME_SPENT_STORAGE_KEY]: 0,
     });
   }
 }
@@ -31,10 +32,10 @@ async function incrementWatchTime() {
   // could check if today, but should always be today due to execution order
   // in main
   if (isOnYoutube()) {
-    let watchTime = await browser.storage.local.get(TIME_SPENT_STORAGE_KEY);
-    watchTime += intervalTime;
+    const watchTime = await browser.storage.local.get(TIME_SPENT_STORAGE_KEY);
+    const newWatchTime = watchTime[TIME_SPENT_STORAGE_KEY] + intervalTime;
     await browser.storage.local.set({
-      TIME_SPENT_STORAGE_KEY: watchTime,
+      [TIME_SPENT_STORAGE_KEY]: newWatchTime,
     });
   }
 }
@@ -46,7 +47,7 @@ async function incrementWatchTime() {
  */
 async function didWatchTooMuchYouTube() {
   const youtubeWatched = await browser.storage.local.get(TIME_SPENT_STORAGE_KEY);
-  return youtubeWatched >= oneHourMs;
+  return youtubeWatched[TIME_SPENT_STORAGE_KEY] >= oneHourMs;
 }
 
 /**
