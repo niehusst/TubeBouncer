@@ -2,7 +2,8 @@
   "name": "tubebouncer",
   "description": "dev release automation",
   "scripts": {
-    "lint": "npx eslint --fix"
+    "lint": "eslint --fix && web-ext lint",
+    "start": "web-ext run"
   },
   "dependencies": {
     "@actions/core": "^1.10.0",

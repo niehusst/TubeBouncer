@@ -7,8 +7,11 @@ This is purely to help me not binge watch youtube as often and is not really int
 
 ## Installation
 
-Download .xpi file from the latest GitHub release, then navigate to [about:addons](about:addons) in your Firefox browser.
-Click the cog in the top right, then select "Install Add-on from file.." and choose the .xpi file you downloaded.
+For official releases, download .xpi file from the latest GitHub release, and firefox should immediately prompt to install the extension.
+If you were not prompted, first navigate to [about:addons](about:addons) in your Firefox browser.
+Then click the cog in the top right, then select "Install Add-on from file.." and choose the .xpi file you downloaded.
+
+To install locally for testing use `npm start` to auto-build and install local ext code into [about:debugging](about:debugging) to install the extension until next browser restart.
 
 ## Automation
 
