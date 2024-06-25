@@ -1,1 +1,1 @@
-{"manifest_version":2,"name":"TubeBouncer","version":"2.0.1","description":"Tries to stop you from watching too many YouTube videos.","icons":{"48":"icons/bouncer-48.jpg"},"content_scripts":[{"matches":["*://*/*"],"js":["src/main.js"]}],"permissions":["storage"]}
+{"manifest_version":2,"name":"TubeBouncer","version":"2.0.2","description":"Tries to stop you from watching too many YouTube videos.","icons":{"48":"icons/bouncer-48.jpg"},"content_scripts":[{"matches":["*://*/*"],"js":["src/main.js"]}],"permissions":["storage"]}
