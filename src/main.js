@@ -1,7 +1,7 @@
 const oneHourMs = 1000 * 60 * 60;
-const intervalTime = 2000; // 2s
+const intervalTime = 5 * 1000; // 5s
 const DATE_STORAGE_KEY = "date_key";
-const TIME_SPENT_STORAGE_KEY = "time_spent_key";
+const START_TIME_STORAGE_KEY = "start_key";
 
 function navigateAway() {
   window.location.href = "https://en.wikipedia.org/wiki/Stop_sign#/media/File:Vienna_Convention_road_sign_B2a.svg";
@@ -17,25 +17,18 @@ function getCurrentDate() {
   return `${d.getDate()}-${d.getMonth()}-${d.getFullYear()}`;
 }
 
-async function updateStoredDate() {
+async function watchedYoutubeToday() {
   const today = getCurrentDate();
   const savedDate = await browser.storage.local.get(DATE_STORAGE_KEY);
-  if (savedDate[DATE_STORAGE_KEY] !== today) {
-    await browser.storage.local.set({
-      [DATE_STORAGE_KEY]: today,
-      [TIME_SPENT_STORAGE_KEY]: 0,
-    });
-  }
+  return savedDate[DATE_STORAGE_KEY] === today;
 }
 
-async function incrementWatchTime() {
-  // could check if today, but should always be today due to execution order
-  // in main
-  if (isOnYoutube()) {
-    const watchTime = await browser.storage.local.get(TIME_SPENT_STORAGE_KEY);
-    const newWatchTime = watchTime[TIME_SPENT_STORAGE_KEY] + intervalTime;
+async function updateStoredDate() {
+  const today = getCurrentDate();
+  if (!watchedYoutubeToday() && isOnYoutube()) {
     await browser.storage.local.set({
-      [TIME_SPENT_STORAGE_KEY]: newWatchTime,
+      [DATE_STORAGE_KEY]: today,
+      [START_TIME_STORAGE_KEY]: Date.now(),
     });
   }
 }
@@ -46,8 +39,9 @@ async function incrementWatchTime() {
  * this day. Else `false`.
  */
 async function didWatchTooMuchYouTube() {
-  const youtubeWatched = await browser.storage.local.get(TIME_SPENT_STORAGE_KEY);
-  return youtubeWatched[TIME_SPENT_STORAGE_KEY] >= oneHourMs;
+  const youtubeWatched = await browser.storage.local.get(START_TIME_STORAGE_KEY);
+  const timeDiff = Date.now() - youtubeWatched[START_TIME_STORAGE_KEY];
+  return timeDiff >= oneHourMs;
 }
 
 /**
@@ -55,8 +49,6 @@ async function didWatchTooMuchYouTube() {
  */
 async function main() {
   await updateStoredDate();
-
-  await incrementWatchTime();
 
   // gtfo if on yt and already watched too much
   if (isOnYoutube() && (await didWatchTooMuchYouTube())) {
