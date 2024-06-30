@@ -25,7 +25,7 @@ async function watchedYoutubeToday() {
 
 async function updateStoredDate() {
   const today = getCurrentDate();
-  if (!watchedYoutubeToday() && isOnYoutube()) {
+  if (!(await watchedYoutubeToday()) && isOnYoutube()) {
     await browser.storage.local.set({
       [DATE_STORAGE_KEY]: today,
       [START_TIME_STORAGE_KEY]: Date.now(),
