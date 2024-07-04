@@ -1,1 +1,35 @@
-{"manifest_version":2,"name":"TubeBouncer","version":"2.0.3","description":"Tries to stop you from watching too many YouTube videos.","icons":{"48":"icons/bouncer-48.jpg"},"content_scripts":[{"matches":["*://*/*"],"js":["src/main.js"]}],"permissions":["storage"]}
+{
+  "manifest_version": 3,
+  "name": "TubeBouncer",
+  "version": "2.0.3",
+  "description": "Tries to stop you from watching too many YouTube videos.",
+  "icons": {
+    "48": "icons/bouncer-48.jpg"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "tube@bouncer.me",
+      "strict_min_version": "101.0"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*/*"
+      ],
+      "js": [
+        "src/main.js"
+      ]
+    }
+  ],
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "action": {
+    "default_popup": "static/options.html",
+    "default_icon": {
+      "48": "icons/boucer-48.jpg"
+    }
+  }
+}
