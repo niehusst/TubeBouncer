@@ -1,7 +1,5 @@
-const oneHourMs = 1000 * 60 * 60;
+/* global DATE_STORAGE_KEY, START_TIME_STORAGE_KEY, MAX_WATCH_TIME_MS, readValue, writeValue */
 const intervalTime = 5 * 1000; // 5s
-const DATE_STORAGE_KEY = "date_key";
-const START_TIME_STORAGE_KEY = "start_key";
 
 function navigateAway() {
   window.location.href = "https://en.wikipedia.org/wiki/Stop_sign#/media/File:Vienna_Convention_road_sign_B2a.svg";
@@ -14,22 +12,20 @@ function isOnYoutube() {
 
 function getCurrentDate() {
   const d = new Date();
-  return `${d.getDate()}-${d.getMonth()}-${d.getFullYear()}`;
+  return `${d.getMonth()+1}-${d.getDate()}-${d.getFullYear()}`;
 }
 
 async function watchedYoutubeToday() {
   const today = getCurrentDate();
-  const savedDate = await browser.storage.local.get(DATE_STORAGE_KEY);
-  return savedDate[DATE_STORAGE_KEY] === today;
+  const savedDate = await readValue(DATE_STORAGE_KEY);
+  return savedDate === today;
 }
 
 async function updateStoredDate() {
   const today = getCurrentDate();
   if (!(await watchedYoutubeToday()) && isOnYoutube()) {
-    await browser.storage.local.set({
-      [DATE_STORAGE_KEY]: today,
-      [START_TIME_STORAGE_KEY]: Date.now(),
-    });
+    await writeValue(DATE_STORAGE_KEY, today);
+    await writeValue(START_TIME_STORAGE_KEY, Date.now());
   }
 }
 
@@ -39,9 +35,9 @@ async function updateStoredDate() {
  * this day. Else `false`.
  */
 async function didWatchTooMuchYouTube() {
-  const youtubeWatched = await browser.storage.local.get(START_TIME_STORAGE_KEY);
-  const timeDiff = Date.now() - youtubeWatched[START_TIME_STORAGE_KEY];
-  return timeDiff >= oneHourMs;
+  const youtubeWatched = await readValue(START_TIME_STORAGE_KEY);
+  const timeDiff = Date.now() - youtubeWatched;
+  return timeDiff >= MAX_WATCH_TIME_MS;
 }
 
 /**
@@ -58,7 +54,7 @@ async function main() {
 
 /*
  * on every interval,
- * if date stored != today, set eq today and reset time spent count
+ * if date  != today, set eq today and reset time spent count
  * if location is youtub.e, add $interval to curr time spent on page in store
  *
  * when t_spent > 1h, nav away from youtube

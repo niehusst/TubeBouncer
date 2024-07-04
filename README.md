@@ -19,3 +19,10 @@ There is a manual dispatch GitHub Action to automatically bump the extension ver
 
 It is recommended to always run the release automation from `main`, but it should also work for any other branch as well.
 
+## Debugging
+
+You can run lint checks with `npm run lint` that also check for web-ext specific issues.
+
+You can run the current extension code in a fresh browser using `npm start`. To debug issues in
+the action popup, follow this [SO post](https://stackoverflow.com/a/39583033/9718199).
+
