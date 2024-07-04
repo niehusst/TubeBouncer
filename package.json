@@ -2,8 +2,8 @@
   "name": "tubebouncer",
   "description": "dev release automation",
   "scripts": {
-    "lint": "eslint --fix && web-ext lint",
-    "start": "web-ext run"
+    "lint": "eslint --fix && web-ext lint --firefox-preview",
+    "start": "web-ext run --firefox-preview"
   },
   "dependencies": {
     "@actions/core": "^1.10.0",
