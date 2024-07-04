@@ -18,6 +18,7 @@
         "*://*/*"
       ],
       "js": [
+        "src/store.js",
         "src/main.js"
       ]
     }
@@ -29,7 +30,7 @@
   "action": {
     "default_popup": "static/options.html",
     "default_icon": {
-      "48": "icons/boucer-48.jpg"
+      "48": "icons/bouncer-48.jpg"
     }
   }
 }
