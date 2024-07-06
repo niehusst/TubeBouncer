@@ -1,4 +1,4 @@
-/* global DATE_STORAGE_KEY, START_TIME_STORAGE_KEY, MAX_WATCH_TIME_MS, readValue, writeValue */
+/* global DATE_STORAGE_KEY, START_TIME_STORAGE_KEY, END_TIME_STORAGE_KEY, MAX_WATCH_TIME_MS, readValue, writeValue */
 const intervalTime = 5 * 1000; // 5s
 
 function navigateAway() {
@@ -21,11 +21,15 @@ async function watchedYoutubeToday() {
   return savedDate === today;
 }
 
-async function updateStoredDate() {
-  const today = getCurrentDate();
-  if (!(await watchedYoutubeToday()) && isOnYoutube()) {
-    await writeValue(DATE_STORAGE_KEY, today);
-    await writeValue(START_TIME_STORAGE_KEY, Date.now());
+async function updateStoredData() {
+  if (isOnYoutube()) {
+    await writeValue(END_TIME_STORAGE_KEY, Date.now());
+
+    if (!(await watchedYoutubeToday())) {
+      const today = getCurrentDate();
+      await writeValue(DATE_STORAGE_KEY, today);
+      await writeValue(START_TIME_STORAGE_KEY, Date.now());
+    }
   }
 }
 
@@ -35,16 +39,17 @@ async function updateStoredDate() {
  * this day. Else `false`.
  */
 async function didWatchTooMuchYouTube() {
-  const youtubeWatched = await readValue(START_TIME_STORAGE_KEY);
-  const timeDiff = Date.now() - youtubeWatched;
-  return timeDiff >= MAX_WATCH_TIME_MS;
+  const startTime = await readValue(START_TIME_STORAGE_KEY);
+  const endTime = await readValue(END_TIME_STORAGE_KEY);
+  const youtubeWatched = endTime - startTime;
+  return youtubeWatched >= MAX_WATCH_TIME_MS;
 }
 
 /**
  * main logic body. intended to be run on an interval
  */
 async function main() {
-  await updateStoredDate();
+  await updateStoredData();
 
   // gtfo if on yt and already watched too much
   if (isOnYoutube() && (await didWatchTooMuchYouTube())) {
