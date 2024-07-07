@@ -1,11 +1,14 @@
-/* global DATE_STORAGE_KEY, WATCHED_TIME_MS_STORAGE_KEY, MAX_WATCH_TIME_MS, readValue */
+/* global DATE_STORAGE_KEY, MAX_WATCH_TIME_MS, readValue, sumWatchTime */
 async function main() {
   const day = await readValue(DATE_STORAGE_KEY);
 
   document.getElementById("day").textContent = day ?? 'not yet';
 
-  const watchedMs = (await readValue(WATCHED_TIME_MS_STORAGE_KEY)) ?? 0;
-  let watchTimeLeftMinutes = (MAX_WATCH_TIME_MS - watchedMs) / (1000 * 60);
+  // bound watch time between 0 and MAX_WATCH_TIME_MS
+  let timeWatchedMs = await sumWatchTime();
+  timeWatchedMs = Math.min(Math.max(timeWatchedMs, 0), MAX_WATCH_TIME_MS);
+  timeWatchedMs = isNaN(timeWatchedMs) ? 0 : timeWatchedMs;
+  let watchTimeLeftMinutes = (MAX_WATCH_TIME_MS - timeWatchedMs) / (1000 * 60);
   // allow only 2 decimal places
   watchTimeLeftMinutes = Math.trunc(watchTimeLeftMinutes * 100) / 100;
   document.getElementById("time").textContent = watchTimeLeftMinutes;
