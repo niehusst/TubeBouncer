@@ -52,8 +52,10 @@ async function updateStoredData() {
 
     if (!(await watchedYoutubeToday())) {
       const today = getCurrentDate();
+      // reset all storage values
       await writeValue(DATE_STORAGE_KEY, today);
-      await writeTimeValue(START_TIME_STORAGE_KEY, Date.now());
+      await writeValue(START_TIME_STORAGE_KEY, [Date.now()]);
+      await writeValue(END_TIME_STORAGE_KEY, [Date.now()]);
     }
   }
 }
