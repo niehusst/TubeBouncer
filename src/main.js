@@ -16,12 +16,12 @@ function getCurrentDate() {
 
 async function didWatchUrlToday(urlKey) {
   const today = getCurrentDate();
-  const savedDate = (await readValue(DATE_STORAGE_KEY)) ?? {};
+  const savedDate = (await readValue(DATE_STORAGE_KEY())) ?? {};
   return savedDate[urlKey] === today;
 }
 
 /**
- * Always appends a new entry to the START/END_TIME_STORAGE_KEY
+ * Always appends a new entry to the START/END_TIME_STORAGE_KEY()
  * list.
  */
 async function writeNewTimeValue(key, urlKey, value) {
@@ -37,10 +37,10 @@ async function writeNewTimeValue(key, urlKey, value) {
 }
 
 /**
- * Updates the latest (last) entry of the START/END_TIME_STORAGE_KEY
+ * Updates the latest (last) entry of the START/END_TIME_STORAGE_KEY()
  * in-place with a new value.
  *
- * key: START/END_TIME_STORAGE_KEY
+ * key: START/END_TIME_STORAGE_KEY()
  * urlKey: urlKey to update value for
  * value: new value to set in key->urlKey->value map
  */
@@ -63,17 +63,17 @@ async function updateStoredData(urlKey) {
   if (!(await didWatchUrlToday(urlKey))) {
     const today = getCurrentDate();
     // reset all storage values for urlKey
-    const dates = (await readValue(DATE_STORAGE_KEY)) ?? {};
+    const dates = (await readValue(DATE_STORAGE_KEY())) ?? {};
     dates[urlKey] = today;
-    await writeValue(DATE_STORAGE_KEY, dates);
+    await writeValue(DATE_STORAGE_KEY(), dates);
 
-    const startTimes = (await readValue(START_TIME_STORAGE_KEY)) ?? {};
+    const startTimes = (await readValue(START_TIME_STORAGE_KEY())) ?? {};
     startTimes[urlKey] = [now];
-    await writeValue(START_TIME_STORAGE_KEY, startTimes);
+    await writeValue(START_TIME_STORAGE_KEY(), startTimes);
     
-    const endTimes = (await readValue(END_TIME_STORAGE_KEY)) ?? {};
+    const endTimes = (await readValue(END_TIME_STORAGE_KEY())) ?? {};
     endTimes[urlKey] = [now];
-    await writeValue(END_TIME_STORAGE_KEY, endTimes);
+    await writeValue(END_TIME_STORAGE_KEY(), endTimes);
   }
 
   // add new time diff pair to lists if we've been off url for a bit
@@ -81,22 +81,22 @@ async function updateStoredData(urlKey) {
   const endTime = (await latestEndTime(urlKey)) ?? now;
   if (now - endTime > 2 * intervalTime) {
     // add new slots to lists
-    await writeNewTimeValue(START_TIME_STORAGE_KEY, urlKey, now);
-    await writeNewTimeValue(END_TIME_STORAGE_KEY, urlKey, now);
+    await writeNewTimeValue(START_TIME_STORAGE_KEY(), urlKey, now);
+    await writeNewTimeValue(END_TIME_STORAGE_KEY(), urlKey, now);
   }
 
   // extend current watch session
-  await updateTimeValue(END_TIME_STORAGE_KEY, urlKey, now);
+  await updateTimeValue(END_TIME_STORAGE_KEY(), urlKey, now);
 }
 
 /**
  * Returns `true` if a window with a location matching
- * urlKey has been focused for MAX_WATCH_TIME_MS or more during
+ * urlKey has been focused for MAX_WATCH_TIME_MS() or more during
  * this day. Else `false`.
  */
 async function spentTooLongOnUrl(urlKey) {
   const tubeWatched = await sumWatchTime(urlKey);
-  return tubeWatched >= MAX_WATCH_TIME_MS;
+  return tubeWatched >= MAX_WATCH_TIME_MS();
 }
 
 /**
@@ -114,9 +114,9 @@ async function main() {
 
 /* eslint-disable no-unused-vars */
 async function printState() {
-  const endTimeList = await readValue(END_TIME_STORAGE_KEY);
-  const startTimeList = await readValue(START_TIME_STORAGE_KEY);
-  const dates = await readValue(DATE_STORAGE_KEY);
+  const endTimeList = await readValue(END_TIME_STORAGE_KEY());
+  const startTimeList = await readValue(START_TIME_STORAGE_KEY());
+  const dates = await readValue(DATE_STORAGE_KEY());
   console.log('start: ', startTimeList); 
   console.log('end: ', endTimeList); 
   console.log9'dates: ', dates);
