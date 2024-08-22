@@ -1,9 +1,10 @@
 const test = require("ava");
 const { readFileIntoScope, buildLocalStorage } = require("./util.js");
+var browser = {};
+
 readFileIntoScope("./src/store.js");
 readFileIntoScope("./src/options.js");
 
-let browser = {};
 
 test.beforeEach((t) => {
   browser = buildLocalStorage();
