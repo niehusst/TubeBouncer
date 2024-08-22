@@ -26,8 +26,3 @@ async function main() {
   }
 }
 
-main();
-setInterval(() => {
-  main();
-}, 5000);
-

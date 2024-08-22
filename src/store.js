@@ -72,3 +72,9 @@ async function sumWatchTime(urlKey) {
   }
   return sum;
 }
+
+function getCurrentDate() {
+  const d = new Date();
+  return `${d.getMonth()+1}-${d.getDate()}-${d.getFullYear()}`;
+}
+
