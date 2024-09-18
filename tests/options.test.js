@@ -12,6 +12,8 @@ test.beforeEach((t) => {
 test("remaining watch time is correctly calculated", async (t) => {
   const key1 = "youtube.com";
   const key2 = "crunchyroll.com";
+  
+  const min = 60 * 1000;
 
   browser = buildLocalStorage({
     [DATE_STORAGE_KEY()]: {
@@ -19,12 +21,12 @@ test("remaining watch time is correctly calculated", async (t) => {
       [key2]: "yesterday",
     },
     [START_TIME_STORAGE_KEY()]: {
-      [key1]: [0, 20000, 100000],
-      [key2]: [10000, 100000],
+      [key1]: [0, 20*min, 100*min, ],
+      [key2]: [10*min, 40*min],
     },
     [END_TIME_STORAGE_KEY()]: {
-      [key1]: [10000, 50000, 130000],
-      [key2]: [50000, 100000],
+      [key1]: [10*min, 50*min, 130*min],
+      [key2]: [15*min, 75*min],
     },
   });
   
