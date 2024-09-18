@@ -6,21 +6,26 @@ module.exports.readFileIntoScope = function (filePath) {
   return content;
 }
 
+class LocalStorage {
+  constructor(state) {
+    this.state = state;
+  }
+
+  async get(key) {
+    return { [key]: this.state[key] };
+  }
+  async set(updateState) {
+    this.state = {
+      ...this.state,
+      ...updateState,
+    };
+  }
+}
+
 module.exports.buildLocalStorage = function (initialState = {}) {
-  let state = initialState;
   return {
     storage: {
-      local: {
-        get: async (key) => {
-          return { [key]: state[key] };
-        },
-        set: async (updateState) => {
-          state = {
-            ...state,
-            ...updateState,
-          };
-        },
-      }
+      local: new LocalStorage(initialState),
     }
   }
 }
