@@ -2,7 +2,7 @@
   "name": "tubebouncer",
   "description": "dev release automation",
   "scripts": {
-    "lint": "eslint --fix && web-ext lint --firefox-preview",
+    "lint": "eslint --fix && web-ext lint --firefox-preview -i '**/*.test.js'",
     "start": "web-ext run --firefox-preview",
     "test": "ava **/*.test.js"
   },
