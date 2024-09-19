@@ -20,7 +20,7 @@ async function main({browser, document}) {
     const body = document.getElementsByTagName("body")[0];
     body.insertAdjacentHTML("beforeend", `<div id=${key}></div>`);
     const elemGroup = document.getElementById(key);
-    const watchTimeLeftMinutes = getRemainingWatchTime(key);
+    const watchTimeLeftMinutes = getRemainingWatchTime(key, browser);
     elemGroup.insertAdjacentHTML("beforeend", `<p>Last watched ${key} on:</p>`);
     elemGroup.insertAdjacentHTML("beforeend", `<h2>${dayMap[key]}</h2>`);
     elemGroup.insertAdjacentHTML("beforeend", `<p>Minutes left in day to watch:</p>`);
