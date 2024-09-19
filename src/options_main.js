@@ -2,6 +2,6 @@
 
 main();
 setInterval(() => {
-  main();
+  main({browser, document});
 }, 5000);
 
