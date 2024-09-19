@@ -16,7 +16,16 @@ async function getRemainingWatchTime(urlKey, browser) {
 async function main({browser, document}) {
   const dayMap = await readValue(DATE_STORAGE_KEY, browser);
 
-  for (let key of Object.keys(dayMap)) {
+  const sites = Object.keys(dayMap);
+  if (sites.length === 0) {
+    const key = "none";
+    const body = document.getElementsByTagName("body")[0];
+    body.insertAdjacentHTML("beforeend", `<div id=${key}></div>`);
+    const elemGroup = document.getElementById(key);
+    elemGroup.insertAdjacentHTML("beforeend", `<h2>Haven't watched any sites yet</h2>`);
+  }
+
+  for (let key of sites) {
     const body = document.getElementsByTagName("body")[0];
     body.insertAdjacentHTML("beforeend", `<div id=${key}></div>`);
     const elemGroup = document.getElementById(key);
