@@ -9,14 +9,14 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 5
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - uses: niehusst/shared-actions/pr-title-check@dist
 
     lint:
         runs-on: ubuntu-latest
         timeout-minutes: 5
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - run: npm ci
             - run: npm run lint
 
@@ -24,6 +24,6 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 5
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - run: npm ci
             - run: npm test
