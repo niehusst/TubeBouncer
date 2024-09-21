@@ -13,23 +13,28 @@ async function getRemainingWatchTime(urlKey, browser) {
 
 /* eslint-disable no-unused-vars */
 
-async function main({browser, document}) {
-  const dayMap = await readValue(DATE_STORAGE_KEY, browser);
+async function optMain({browser, document}) {
+  const dayMap = (await readValue(DATE_STORAGE_KEY, browser)) || {};
 
   const sites = Object.keys(dayMap);
+  const body = document.getElementsByTagName("body")[0];
+
+  // clear those children
+  while (body.lastElementChild) {
+    body.removeChild(body.lastElementChild);
+  }
+
   if (sites.length === 0) {
     const key = "none";
-    const body = document.getElementsByTagName("body")[0];
     body.insertAdjacentHTML("beforeend", `<div id=${key}></div>`);
     const elemGroup = document.getElementById(key);
     elemGroup.insertAdjacentHTML("beforeend", `<h2>Haven't watched any sites yet</h2>`);
   }
-
+  
   for (let key of sites) {
-    const body = document.getElementsByTagName("body")[0];
     body.insertAdjacentHTML("beforeend", `<div id=${key}></div>`);
     const elemGroup = document.getElementById(key);
-    const watchTimeLeftMinutes = getRemainingWatchTime(key, browser);
+    const watchTimeLeftMinutes = await getRemainingWatchTime(key, browser);
     elemGroup.insertAdjacentHTML("beforeend", `<p>Last watched ${key} on:</p>`);
     elemGroup.insertAdjacentHTML("beforeend", `<h2>${dayMap[key]}</h2>`);
     elemGroup.insertAdjacentHTML("beforeend", `<p>Minutes left in day to watch:</p>`);

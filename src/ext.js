@@ -102,7 +102,7 @@ async function spentTooLongOnUrl(urlKey, browser) {
  */
 async function main({browser, window}) {
   const urlKey = getUrlKey(window);
-  await updateStoredData(urlKey);
+  await updateStoredData(urlKey, browser);
 
   // gtfo if on yt and already watched too much
   if (await spentTooLongOnUrl(urlKey, browser)) {

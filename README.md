@@ -24,5 +24,14 @@ It is recommended to always run the release automation from `main`, but it shoul
 You can run lint checks with `npm run lint` that also check for web-ext specific issues.
 
 You can run the current extension code in a fresh browser using `npm start`. To debug issues in
-the action popup, follow this [SO post](https://stackoverflow.com/a/39583033/9718199).
+the action popup, follow this [SO post](https://stackoverflow.com/a/39583033/9718199):
 
+1. enter about:debugging in the URL bar.
+
+2. In the left-hand menu, click This Firefox (or This Nightly).
+
+3. click Inspect next to your extension to open the "Extension Toolbox".
+
+4. Check the option to "Disable Popup Auto-Hide" in the Extension Toolbox
+
+5. then you select which HTML document you mean to debug (in this case it would be your popup HTML code) using the context switcher ("select an iframe as the currently targeted document")

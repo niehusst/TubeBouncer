@@ -1,7 +1,7 @@
-/* global main */
+/* global optMain */
 
-main();
+optMain({browser, document});
 setInterval(() => {
-  main({browser, document});
+  optMain({browser, document});
 }, 5000);
 
