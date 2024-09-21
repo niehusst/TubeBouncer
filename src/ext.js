@@ -59,15 +59,15 @@ async function updateStoredData(urlKey, browser) {
   if (!(await didWatchUrlToday(urlKey, browser))) {
     const today = getCurrentDate();
     // reset all storage values for urlKey
-    const dates = (await readValue(DATE_STORAGE_KEY, browser)) ?? {};
+    const dates = {};
     dates[urlKey] = today;
     await writeValue(DATE_STORAGE_KEY, dates, browser);
 
-    const startTimes = (await readValue(START_TIME_STORAGE_KEY, browser)) ?? {};
+    const startTimes = {};
     startTimes[urlKey] = [now];
     await writeValue(START_TIME_STORAGE_KEY, startTimes, browser);
     
-    const endTimes = (await readValue(END_TIME_STORAGE_KEY, browser)) ?? {};
+    const endTimes = {};
     endTimes[urlKey] = [now];
     await writeValue(END_TIME_STORAGE_KEY, endTimes, browser);
   }
