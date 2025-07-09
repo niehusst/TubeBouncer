@@ -5,4 +5,3 @@ setInterval(() => {
   optMain({browser, document});
 }, 5000);
 
-

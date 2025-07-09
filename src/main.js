@@ -1,4 +1,3 @@
-
 import { END_TIME_STORAGE_KEY, START_TIME_STORAGE_KEY, DATE_STORAGE_KEY, readValue } from './store.js';
 import { intervalTime, main } from './ext.js';
 

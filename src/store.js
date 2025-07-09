@@ -1,5 +1,3 @@
- 
-
 /* DATA STORAGE EXPLANATION:
  *
  * 3 separate data bits stored in local storage.
