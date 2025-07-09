@@ -3,8 +3,6 @@ import { buildLocalStorage } from "./util.js";
 import { DATE_STORAGE_KEY, END_TIME_STORAGE_KEY, START_TIME_STORAGE_KEY } from "../src/store.js";
 import { spentTooLongOnUrl } from "../src/ext.js";
 
-
-
 test("too much watch time calculated correctly across sessions", async (t) => {
   const key1 = "youtube.com";
 

@@ -3,22 +3,22 @@
   "description": "dev release automation",
   "type": "module",
   "scripts": {
-    "lint": "eslint --fix src/* tests/* && web-ext lint --firefox-preview -i '**/*.test.js'",
-    "start": "web-ext run --firefox=$(which firefox)",
+    "lint": "eslint --fix src/* tests/* && web-ext lint -i '**/*.test.js'",
+    "start": "web-ext run",
     "test": "ava **/*.test.js",
     "build": "rollup -c"
   },
   "dependencies": {
     "@actions/core": "^1.10.0",
-    "web-ext": "^7.3.1"
+    "web-ext": "^8.8.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.4.0",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "ava": "^6.1.3",
     "eslint": "^9.4.0",
     "globals": "^15.4.0",
-    "rollup": "^4.16.4",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-commonjs": "^25.0.7"
+    "rollup": "^4.16.4"
   }
 }
