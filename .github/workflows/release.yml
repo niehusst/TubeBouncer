@@ -32,7 +32,7 @@ jobs:
       - id: build
         run: |-
           npm run build
-        npx web-ext sign --api-key=${{ secrets.AMO_JWT_ISSUER }} --api-secret=${{ secrets.AMO_JWT_SECRET }} --channel='unlisted'
+          npx web-ext sign --api-key=${{ secrets.AMO_JWT_ISSUER }} --api-secret=${{ secrets.AMO_JWT_SECRET }} --channel=unlisted
           echo "xpi-file=$(find web-ext-artifacts/ -name "*.xpi")" >> $GITHUB_OUTPUT
   
       - name: finalize release
