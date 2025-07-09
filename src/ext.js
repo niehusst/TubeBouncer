@@ -1,15 +1,26 @@
-/* global DATE_STORAGE_KEY, END_TIME_STORAGE_KEY, START_TIME_STORAGE_KEY, latestEndTime, sumWatchTime, MAX_WATCH_TIME_MS, readValue, writeValue, getCurrentDate */
-var intervalTime = 5 * 1000; // 5s
+import {
+  DATE_STORAGE_KEY,
+  END_TIME_STORAGE_KEY,
+  START_TIME_STORAGE_KEY,
+  latestEndTime,
+  sumWatchTime,
+  MAX_WATCH_TIME_MS,
+  readValue,
+  writeValue,
+  getCurrentDate
+} from './store.js';
 
-function navigateAway(window) {
+export const intervalTime = 5 * 1000; // 5s
+
+export function navigateAway(window) {
   window.location.href = "https://en.wikipedia.org/wiki/Stop_sign#/media/File:Vienna_Convention_road_sign_B2a.svg";
 }
 
-function getUrlKey(window) {
+export function getUrlKey(window) {
   return new URL(window.location.href).host;
 }
 
-async function didWatchUrlToday(urlKey, browser) {
+export async function didWatchUrlToday(urlKey, browser) {
   const today = getCurrentDate();
   const savedDate = (await readValue(DATE_STORAGE_KEY, browser)) ?? {};
   return savedDate[urlKey] === today;
@@ -19,7 +30,7 @@ async function didWatchUrlToday(urlKey, browser) {
  * Always appends a new entry to the START/END_TIME_STORAGE_KEY
  * list.
  */
-async function writeNewTimeValue(key, urlKey, value, browser) {
+export async function writeNewTimeValue(key, urlKey, value, browser) {
   const timeMap = (await readValue(key, browser)) ?? {};
 
   if (timeMap[urlKey]) {
@@ -40,7 +51,7 @@ async function writeNewTimeValue(key, urlKey, value, browser) {
  * value: new value to set in key->urlKey->value map
  * browser: ext js browser global
  */
-async function updateTimeValue(key, urlKey, value, browser) {
+export async function updateTimeValue(key, urlKey, value, browser) {
   const timeMap = (await readValue(key, browser)) ?? {};
 
   if (timeMap[urlKey]) {
@@ -52,7 +63,7 @@ async function updateTimeValue(key, urlKey, value, browser) {
   await writeValue(key, timeMap, browser);
 }
 
-async function updateStoredData(urlKey, browser) {
+export async function updateStoredData(urlKey, browser) {
   const now = Date.now();
 
   // reset storage if first time on url today
@@ -90,23 +101,21 @@ async function updateStoredData(urlKey, browser) {
  * urlKey has been focused for MAX_WATCH_TIME_MS or more during
  * this day. Else `false`.
  */
-async function spentTooLongOnUrl(urlKey, browser) {
+export async function spentTooLongOnUrl(urlKey, browser) {
   const tubeWatched = await sumWatchTime(urlKey, browser);
   return tubeWatched >= MAX_WATCH_TIME_MS;
 }
 
-/* eslint-disable no-unused-vars */
-
 /**
  * main logic body. intended to be run on an interval
  */
-async function main({browser, window}) {
+export async function main({browser, window}) {
   const urlKey = getUrlKey(window);
   await updateStoredData(urlKey, browser);
 
   // gtfo if on yt and already watched too much
   if (await spentTooLongOnUrl(urlKey, browser)) {
+
     navigateAway(window);
   }
 }
-

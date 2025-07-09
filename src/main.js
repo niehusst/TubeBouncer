@@ -1,4 +1,6 @@
-/* global DATE_STORAGE_KEY, END_TIME_STORAGE_KEY, START_TIME_STORAGE_KEY, readValue, intervalTime, main */
+
+import { END_TIME_STORAGE_KEY, START_TIME_STORAGE_KEY, DATE_STORAGE_KEY, readValue } from './store.js';
+import { intervalTime, main } from './ext.js';
 
 /* eslint-disable no-unused-vars */
 async function printState() {
@@ -11,6 +13,6 @@ async function printState() {
 }
 
 setInterval(() => {
-  main({browser, window}) //.then(() => printState());
+  main({browser, window});
 }, intervalTime);
 

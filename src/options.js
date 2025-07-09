@@ -1,6 +1,13 @@
-/* global DATE_STORAGE_KEY, START_TIME_STORAGE_KEY, END_TIME_STORAGE_KEY, MAX_WATCH_TIME_MS, readValue, sumWatchTime */
+import {
+  DATE_STORAGE_KEY,
+  START_TIME_STORAGE_KEY,
+  END_TIME_STORAGE_KEY,
+  MAX_WATCH_TIME_MS,
+  readValue,
+  sumWatchTime
+} from './store.js';
 
-async function getRemainingWatchTime(urlKey, browser) {
+export async function getRemainingWatchTime(urlKey, browser) {
   // bound watch time between 0 and MAX_WATCH_TIME_MS
   let timeWatchedMs = await sumWatchTime(urlKey, browser);
   timeWatchedMs = isNaN(timeWatchedMs) ? 0 : timeWatchedMs;
@@ -11,7 +18,7 @@ async function getRemainingWatchTime(urlKey, browser) {
   return watchTimeLeftMinutes;
 }
 
-async function getInfo(browser) {
+export async function getInfo(browser) {
   const dayMap = await readValue(DATE_STORAGE_KEY, browser);
   const endTimeList = await readValue(END_TIME_STORAGE_KEY, browser);
   const startTimeList = await readValue(START_TIME_STORAGE_KEY, browser);
@@ -23,9 +30,7 @@ async function getInfo(browser) {
   return infoList.join('\n');
 }
 
-/* eslint-disable no-unused-vars */
-
-async function optMain({browser, document}) {
+export async function optMain({browser, document}) {
   const naKey = "none";
   document.getElementById(naKey)?.remove();
 
@@ -41,31 +46,71 @@ async function optMain({browser, document}) {
   const info = 'info';
 
   if (!hasVisitedSites && !hasPageUI) {
-    body.insertAdjacentHTML("beforeend", `<div id="${naKey}"><h2>Haven't watched any sites yet</h2></div>`);
+    // <div id="${naKey}"><h2>Haven't watched any sites yet</h2></div>
+    const div = document.createElement('div');
+    div.id = naKey;
+    const h2 = document.createElement('h2');
+    h2.textContent = "Haven't watched any sites yet";
+    div.appendChild(h2);
+    body.appendChild(div);
   } else if (hasVisitedSites && !hasPageUI) {
     // add elements for first time
     for (let key of sites) {
-      body.insertAdjacentHTML("beforeend", `<div id=${key}></div>`);
-      const elemGroup = document.getElementById(key);
+      // <div id=${key}></div>
+      const elemGroup = document.createElement('div');
+      elemGroup.id = key;
+      body.appendChild(elemGroup);
+
       const watchTimeLeftMinutes = await getRemainingWatchTime(key, browser);
-      elemGroup.insertAdjacentHTML("beforeend", `<p>Last watched ${key} on:</p>`);
-      elemGroup.insertAdjacentHTML("beforeend", `<h2 id="${key}::${day}" class="${dynamicLabel}">${dayMap[key]}</h2>`);
-      elemGroup.insertAdjacentHTML("beforeend", '<p>Minutes left in day to watch:</p>');
-      elemGroup.insertAdjacentHTML("beforeend", `<h2 id="${key}::${watched}" class="${dynamicLabel}">${watchTimeLeftMinutes}</h2>`);
+
+      // <p>Last watched ${key} on:</p>
+      const p1 = document.createElement('p');
+      p1.textContent = `Last watched ${key} on:`;
+      elemGroup.appendChild(p1);
+
+      // <h2 id="${key}::${day}" class="${dynamicLabel}">${dayMap[key]}</h2>
+      const h2day = document.createElement('h2');
+      h2day.id = `${key}::${day}`;
+      h2day.className = dynamicLabel;
+      h2day.textContent = dayMap[key];
+      elemGroup.appendChild(h2day);
+
+      // <p>Minutes left in day to watch:</p>
+      const p2 = document.createElement('p');
+      p2.textContent = 'Minutes left in day to watch:';
+      elemGroup.appendChild(p2);
+
+      // <h2 id="${key}::${watched}" class="${dynamicLabel}">${watchTimeLeftMinutes}</h2>
+      const h2watched = document.createElement('h2');
+      h2watched.id = `${key}::${watched}`;
+      h2watched.className = dynamicLabel;
+      h2watched.textContent = watchTimeLeftMinutes;
+      elemGroup.appendChild(h2watched);
     }
 
     const btnId = 'btn';
     const ddId = `dd::${info}`;
     const infoData = await getInfo(browser);
-    body.insertAdjacentHTML("beforeend", `<button id="${btnId}">(debug info)</button>`);
-    body.insertAdjacentHTML("beforeend", `<p class="small gone ${dynamicLabel}" id="${ddId}">${infoData}</p>`);
-    const btn = document.getElementById(btnId);
+
+    // <button id="${btnId}">(debug info)</button>
+    const btn = document.createElement('button');
+    btn.id = btnId;
+    btn.textContent = '(debug info)';
+    body.appendChild(btn);
+
+    // <p class="small gone ${dynamicLabel}" id="${ddId}">${infoData}</p>
+    const pInfo = document.createElement('p');
+    pInfo.className = `small gone ${dynamicLabel}`;
+    pInfo.id = ddId;
+    pInfo.textContent = infoData;
+    body.appendChild(pInfo);
+
     btn.addEventListener('click', function () {
       const content = document.getElementById(ddId);
       if (content.style.display === "none" || content.style.display === "") {
-          content.style.display = "block";
+        content.style.display = "block";
       } else {
-          content.style.display = "none";
+        content.style.display = "none";
       }
     });
   } else if (hasVisitedSites && hasPageUI) {
