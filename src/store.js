@@ -22,25 +22,23 @@
 // TODO: just consolidate this shit into 1 object
 
 // date_key: {urlKey: <date>, ...}
-var DATE_STORAGE_KEY = "date_key";
-// start_key: {urlKey: [<ts>, ...], ...}
-var START_TIME_STORAGE_KEY = "start_key"; 
-// end_key: {urlKey: [<ts>, ...], ...}
-var END_TIME_STORAGE_KEY = "end_key";
-var MAX_WATCH_TIME_MS = 1000 * 60 * 60; // 1h
+export const DATE_STORAGE_KEY = "date_key";
+export const START_TIME_STORAGE_KEY = "start_key"; 
+export const END_TIME_STORAGE_KEY = "end_key";
+export const MAX_WATCH_TIME_MS = 1000 * 60 * 60; // 1h
 
-async function readValue(key, browser) {
+export async function readValue(key, browser) {
   const savedValue = await browser.storage.local.get(key);
   return savedValue[key];
 }
 
-async function writeValue(key, value, browser) {
+export async function writeValue(key, value, browser) {
   await browser.storage.local.set({
     [key]: value,
   });
 }
 
-async function latestStartTime(urlKey, browser) {
+export async function latestStartTime(urlKey, browser) {
   const startTimeList = await readValue(START_TIME_STORAGE_KEY, browser);
   if (startTimeList && startTimeList[urlKey]) {
     return startTimeList[urlKey][startTimeList[urlKey].length - 1];
@@ -48,7 +46,7 @@ async function latestStartTime(urlKey, browser) {
   return undefined;
 }
 
-async function latestEndTime(urlKey, browser) {
+export async function latestEndTime(urlKey, browser) {
   const endTimeList = await readValue(END_TIME_STORAGE_KEY, browser);
   if (endTimeList && endTimeList[urlKey]) {
     return endTimeList[urlKey][endTimeList[urlKey].length - 1];
@@ -56,7 +54,7 @@ async function latestEndTime(urlKey, browser) {
   return undefined;
 }
 
-async function sumWatchTime(urlKey, browser) {
+export async function sumWatchTime(urlKey, browser) {
   const startTimeMap = (await readValue(START_TIME_STORAGE_KEY, browser)) ?? {};
   const startTimeList = startTimeMap[urlKey] ?? [];
   const endTimeMap = (await readValue(END_TIME_STORAGE_KEY, browser)) ?? {};
@@ -73,8 +71,7 @@ async function sumWatchTime(urlKey, browser) {
   return sum;
 }
 
-function getCurrentDate() {
+export function getCurrentDate() {
   const d = new Date();
   return `${d.getMonth()+1}-${d.getDate()}-${d.getFullYear()}`;
 }
-

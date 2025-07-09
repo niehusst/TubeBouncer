@@ -1,12 +1,5 @@
-const fs = require('fs');
 
-module.exports.readFileIntoScope = function (filePath) {
-  const content = fs.readFileSync(filePath, {encoding: 'utf8'});
-  // sadly cant run eval here because we need to eval in global scope
-  return content;
-}
-
-class LocalStorage {
+export class LocalStorage {
   constructor(state) {
     this.state = state;
   }
@@ -22,11 +15,11 @@ class LocalStorage {
   }
 }
 
-module.exports.buildLocalStorage = function (initialState = {}) {
+export function buildLocalStorage(initialState = {}) {
   return {
     storage: {
       local: new LocalStorage(initialState),
     }
-  }
+  };
 }
 

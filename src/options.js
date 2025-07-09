@@ -1,6 +1,13 @@
-/* global DATE_STORAGE_KEY, START_TIME_STORAGE_KEY, END_TIME_STORAGE_KEY, MAX_WATCH_TIME_MS, readValue, sumWatchTime */
+import {
+  DATE_STORAGE_KEY,
+  START_TIME_STORAGE_KEY,
+  END_TIME_STORAGE_KEY,
+  MAX_WATCH_TIME_MS,
+  readValue,
+  sumWatchTime
+} from './store.js';
 
-async function getRemainingWatchTime(urlKey, browser) {
+export async function getRemainingWatchTime(urlKey, browser) {
   // bound watch time between 0 and MAX_WATCH_TIME_MS
   let timeWatchedMs = await sumWatchTime(urlKey, browser);
   timeWatchedMs = isNaN(timeWatchedMs) ? 0 : timeWatchedMs;
@@ -11,7 +18,7 @@ async function getRemainingWatchTime(urlKey, browser) {
   return watchTimeLeftMinutes;
 }
 
-async function getInfo(browser) {
+export async function getInfo(browser) {
   const dayMap = await readValue(DATE_STORAGE_KEY, browser);
   const endTimeList = await readValue(END_TIME_STORAGE_KEY, browser);
   const startTimeList = await readValue(START_TIME_STORAGE_KEY, browser);
@@ -23,9 +30,7 @@ async function getInfo(browser) {
   return infoList.join('\n');
 }
 
-/* eslint-disable no-unused-vars */
-
-async function optMain({browser, document}) {
+export async function optMain({browser, document}) {
   const naKey = "none";
   document.getElementById(naKey)?.remove();
 

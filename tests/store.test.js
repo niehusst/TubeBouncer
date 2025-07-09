@@ -1,9 +1,6 @@
-/* global DATE_STORAGE_KEY, END_TIME_STORAGE_KEY, START_TIME_STORAGE_KEY, sumWatchTime */
- 
-const test = require("ava");
-const { readFileIntoScope, buildLocalStorage } = require("./util.js");
-
-eval(readFileIntoScope("./src/store.js"));
+import test from "ava";
+import { buildLocalStorage } from "./util.js";
+import { DATE_STORAGE_KEY, END_TIME_STORAGE_KEY, START_TIME_STORAGE_KEY, sumWatchTime } from "../src/store.js";
 
 const min = 60 * 1000;
 

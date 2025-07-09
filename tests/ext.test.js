@@ -1,10 +1,7 @@
-/* global DATE_STORAGE_KEY, END_TIME_STORAGE_KEY, START_TIME_STORAGE_KEY, spentTooLongOnUrl */
- 
-const test = require("ava");
-const { readFileIntoScope, buildLocalStorage } = require("./util.js");
-
-eval(readFileIntoScope("./src/store.js"));
-eval(readFileIntoScope("./src/ext.js"));
+import test from "ava";
+import { buildLocalStorage } from "./util.js";
+import { DATE_STORAGE_KEY, END_TIME_STORAGE_KEY, START_TIME_STORAGE_KEY } from "../src/store.js";
+import { spentTooLongOnUrl } from "../src/ext.js";
 
 const min = 60 * 1000;
 
