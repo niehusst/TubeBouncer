@@ -38,7 +38,7 @@ export async function optMain({browser, document}) {
 
   const dayMap = (await readValue(DATE_STORAGE_KEY, browser)) || {};
   const sites = Object.keys(dayMap);
-  const body = document.getElementById("root");
+  const body = document.getElementById("tb-root");
   const hasVisitedSites = sites.length > 0;
   const hasPageUI = body.children.length > 0;
   // elements w/ dynamicLabel class marker have id w/ pattern "site_key::info_type"
