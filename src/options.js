@@ -68,7 +68,7 @@ export async function optMain({browser, document}) {
         span.textContent = pattern;
         li.appendChild(span);
         const delBtn = document.createElement('button');
-        delBtn.textContent = '✕';
+        delBtn.textContent = 'X';
         delBtn.title = 'Delete pattern';
         delBtn.style.marginLeft = '8px';
         delBtn.style.fontSize = '0.9em';
@@ -76,7 +76,6 @@ export async function optMain({browser, document}) {
         delBtn.onclick = async () => {
           const newPatterns = patterns.filter((_, i) => i !== idx);
           await writeValue(USER_URLS_KEY, newPatterns, browser);
-          input.value = newPatterns.join(',');
           renderPatternList(newPatterns);
         };
         li.appendChild(delBtn);
@@ -86,11 +85,14 @@ export async function optMain({browser, document}) {
     renderPatternList(urls);
 
     saveBtn.onclick = async () => {
-      const newUrls = input.value.split(',').map(u => u.trim()).filter(Boolean);
-      await writeValue(USER_URLS_KEY, newUrls, browser);
+      const currentPatterns = await readValue(USER_URLS_KEY, browser) || [];
+      const newPatterns = Array.from(new Set([...currentPatterns, input.value]));
+      // Save unique, non-empty patterns
+      await writeValue(USER_URLS_KEY, newPatterns, browser);
       saveBtn.textContent = 'Saved!';
+      input.textContent = '';
       setTimeout(() => { saveBtn.textContent = 'Save'; }, 1000);
-      renderPatternList(newUrls);
+      renderPatternList(newPatterns);
     };
   }
 
