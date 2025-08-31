@@ -27,6 +27,7 @@
   const START_TIME_STORAGE_KEY = "start_key"; 
   const END_TIME_STORAGE_KEY = "end_key";
   const MAX_WATCH_TIME_MS = 1000 * 60 * 60; // 1h
+  const USER_URLS_KEY = 'user_urls';
 
   async function readValue(key, browser) {
     const savedValue = await browser.storage.local.get(key);
@@ -129,16 +130,14 @@
     if (!(await didWatchUrlToday(urlKey, browser))) {
       const today = getCurrentDate();
       // reset all storage values for urlKey
-      const dates = {};
+      const dates = (await readValue(DATE_STORAGE_KEY, browser)) || {};
       dates[urlKey] = today;
       await writeValue(DATE_STORAGE_KEY, dates, browser);
 
-      const startTimes = {};
-      startTimes[urlKey] = [now];
+      const startTimes = (await readValue(START_TIME_STORAGE_KEY, browser)) || {};    startTimes[urlKey] = [now];
       await writeValue(START_TIME_STORAGE_KEY, startTimes, browser);
       
-      const endTimes = {};
-      endTimes[urlKey] = [now];
+      const endTimes = (await readValue(END_TIME_STORAGE_KEY, browser)) || {};    endTimes[urlKey] = [now];
       await writeValue(END_TIME_STORAGE_KEY, endTimes, browser);
     }
 
@@ -149,10 +148,10 @@
       // add new slots to lists
       await writeNewTimeValue(START_TIME_STORAGE_KEY, urlKey, now, browser);
       await writeNewTimeValue(END_TIME_STORAGE_KEY, urlKey, now, browser);
+    } else {
+      // extend current watch session
+      await updateTimeValue(END_TIME_STORAGE_KEY, urlKey, now, browser);
     }
-
-    // extend current watch session
-    await updateTimeValue(END_TIME_STORAGE_KEY, urlKey, now, browser);
   }
 
   /**
@@ -170,12 +169,22 @@
    */
   async function main({browser, window}) {
     const urlKey = getUrlKey(window);
-    await updateStoredData(urlKey, browser);
+    // Only decrease timer if current site matches user regex patterns
+    const userPatterns = await readValue(USER_URLS_KEY ,browser) || [];
+    const matches = userPatterns.some(pattern => {
+      try {
+        return new RegExp(pattern).test(urlKey);
+      } catch {
+        // Invalid regex, ignore
+        return false;
+      }
+    });
 
-    // gtfo if on yt and already watched too much
-    if (await spentTooLongOnUrl(urlKey, browser)) {
-
-      navigateAway(window);
+    if (matches) {
+      await updateStoredData(urlKey, browser);
+      if (await spentTooLongOnUrl(urlKey, browser)) {
+        navigateAway(window);
+      }
     }
   }
 

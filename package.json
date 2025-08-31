@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "lint": "eslint --fix src/* tests/* && web-ext lint -i '**/*.test.js'",
-    "start": "web-ext run",
+    "start": "npm run build ; web-ext run",
     "test": "ava **/*.test.js",
     "build": "rollup -c"
   },

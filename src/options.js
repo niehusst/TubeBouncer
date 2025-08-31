@@ -4,7 +4,9 @@ import {
   END_TIME_STORAGE_KEY,
   MAX_WATCH_TIME_MS,
   readValue,
-  sumWatchTime
+  sumWatchTime,
+  writeValue,
+  USER_URLS_KEY
 } from './store.js';
 
 export async function getRemainingWatchTime(urlKey, browser) {
@@ -36,7 +38,7 @@ export async function optMain({browser, document}) {
 
   const dayMap = (await readValue(DATE_STORAGE_KEY, browser)) || {};
   const sites = Object.keys(dayMap);
-  const body = document.getElementsByTagName("body")[0];
+  const body = document.getElementById("tb-root");
   const hasVisitedSites = sites.length > 0;
   const hasPageUI = body.children.length > 0;
   // elements w/ dynamicLabel class marker have id w/ pattern "site_key::info_type"
@@ -44,6 +46,55 @@ export async function optMain({browser, document}) {
   const day = 'day';
   const watched = 'watched';
   const info = 'info';
+
+  // --- User URL input UI (now static in HTML) ---
+  const input = document.getElementById('user-url-list');
+  const saveBtn = document.getElementById('user-url-save');
+  if (input && saveBtn) {
+    // Load and display current URLs
+    const urls = await readValue(USER_URLS_KEY, browser) || [];
+
+    // Display current patterns in the list
+    const listDisplay = document.getElementById('user-url-list-display');
+    function renderPatternList(patterns) {
+      if (!listDisplay) return;
+      listDisplay.innerHTML = '';
+      patterns.forEach((pattern, idx) => {
+        const li = document.createElement('li');
+        li.style.display = 'flex';
+        li.style.alignItems = 'center';
+        li.style.marginBottom = '2px';
+        const span = document.createElement('span');
+        span.textContent = pattern;
+        li.appendChild(span);
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'X';
+        delBtn.title = 'Delete pattern';
+        delBtn.style.marginLeft = '8px';
+        delBtn.style.fontSize = '0.9em';
+        delBtn.style.padding = '0 4px';
+        delBtn.onclick = async () => {
+          const newPatterns = patterns.filter((_, i) => i !== idx);
+          await writeValue(USER_URLS_KEY, newPatterns, browser);
+          renderPatternList(newPatterns);
+        };
+        li.appendChild(delBtn);
+        listDisplay.appendChild(li);
+      });
+    }
+    renderPatternList(urls);
+
+    saveBtn.onclick = async () => {
+      const currentPatterns = await readValue(USER_URLS_KEY, browser) || [];
+      const newPatterns = Array.from(new Set([...currentPatterns, input.value]));
+      // Save unique, non-empty patterns
+      await writeValue(USER_URLS_KEY, newPatterns, browser);
+      saveBtn.textContent = 'Saved!';
+      input.value = '';
+      setTimeout(() => { saveBtn.textContent = 'Save'; }, 1000);
+      renderPatternList(newPatterns);
+    };
+  }
 
   if (!hasVisitedSites && !hasPageUI) {
     // <div id="${naKey}"><h2>Haven't watched any sites yet</h2></div>

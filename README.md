@@ -11,7 +11,7 @@ For official releases, download .xpi file from the latest GitHub release, and fi
 If you were not prompted, first navigate to [about:addons](about:addons) in your Firefox browser.
 Then click the cog in the top right, then select "Install Add-on from file.." and choose the .xpi file you downloaded.
 
-To install locally for testing use `npm start` to auto-build and install local ext code into [about:debugging](about:debugging) to install the extension until next browser restart.
+To install locally for testing use `npm start` to auto-build and install local ext code into [about:debugging](about:debugging) to install the extension until next browser restart. (if getting ECONNREFUSED, try running in a different terminal app. It seems web-ext doesn't like the VSCode terminal.)
 
 ## Automation
 

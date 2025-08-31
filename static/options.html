@@ -17,6 +17,19 @@
     <script src="../dist/options_bundle.js"></script>
   </head>
   <body>
-    <!-- dynamic content inserted here -->
+    <div id="user-url-input" style="margin-bottom:12px;">
+      <label style="font-size:0.8em;" for="user-url-list">
+        Input site to limit (regex supported):
+      </label>
+      <input type="text" id="user-url-list" style="width:100%;margin:4px 0;" />
+      <button id="user-url-save" style="margin-left:4px;">Save</button>
+    </div>
+    <div id="user-url-list-section" style="margin-bottom:12px;">
+      <label style="font-size:0.8em;">Current patterns:</label>
+      <ul id="user-url-list-display" style="padding-left:18px;margin:4px 0 0 0;"></ul>
+    </div>
+    <div id="tb-root">
+      <!-- dynamic content inserted here -->
+    </div>
   </body>
 </html>
