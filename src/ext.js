@@ -71,15 +71,15 @@ export async function updateStoredData(urlKey, browser) {
   if (!(await didWatchUrlToday(urlKey, browser))) {
     const today = getCurrentDate();
     // reset all storage values for urlKey
-    const dates = {};
+    const dates = (await readValue(DATE_STORAGE_KEY, browser)) || {};
     dates[urlKey] = today;
     await writeValue(DATE_STORAGE_KEY, dates, browser);
 
-    const startTimes = {};
+    const startTimes = (await readValue(START_TIME_STORAGE_KEY, browser)) || {};;
     startTimes[urlKey] = [now];
     await writeValue(START_TIME_STORAGE_KEY, startTimes, browser);
     
-    const endTimes = {};
+    const endTimes = (await readValue(END_TIME_STORAGE_KEY, browser)) || {};;
     endTimes[urlKey] = [now];
     await writeValue(END_TIME_STORAGE_KEY, endTimes, browser);
   }
@@ -91,10 +91,10 @@ export async function updateStoredData(urlKey, browser) {
     // add new slots to lists
     await writeNewTimeValue(START_TIME_STORAGE_KEY, urlKey, now, browser);
     await writeNewTimeValue(END_TIME_STORAGE_KEY, urlKey, now, browser);
+  } else {
+    // extend current watch session
+    await updateTimeValue(END_TIME_STORAGE_KEY, urlKey, now, browser);
   }
-
-  // extend current watch session
-  await updateTimeValue(END_TIME_STORAGE_KEY, urlKey, now, browser);
 }
 
 /**

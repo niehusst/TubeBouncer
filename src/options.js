@@ -90,7 +90,7 @@ export async function optMain({browser, document}) {
       // Save unique, non-empty patterns
       await writeValue(USER_URLS_KEY, newPatterns, browser);
       saveBtn.textContent = 'Saved!';
-      input.textContent = '';
+      input.value = '';
       setTimeout(() => { saveBtn.textContent = 'Save'; }, 1000);
       renderPatternList(newPatterns);
     };

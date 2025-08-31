@@ -138,6 +138,7 @@
         // Save unique, non-empty patterns
         await writeValue(USER_URLS_KEY, newPatterns, browser);
         saveBtn.textContent = 'Saved!';
+        input.value = '';
         setTimeout(() => { saveBtn.textContent = 'Save'; }, 1000);
         renderPatternList(newPatterns);
       };
