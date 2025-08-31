@@ -17,6 +17,15 @@
     <script src="../dist/options_bundle.js"></script>
   </head>
   <body>
-    <!-- dynamic content inserted here -->
+    <div id="user-url-input" style="margin-bottom:12px;">
+      <label style="font-size:0.8em;" for="user-url-list">
+        Sites to track (comma separated regex, e.g. \\byoutube\\.com$,crunchyroll\\.com):
+      </label>
+      <input type="text" id="user-url-list" style="width:100%;margin:4px 0;" />
+      <button id="user-url-save" style="margin-left:4px;">Save</button>
+    </div>
+    <div id="root">
+      <!-- dynamic content inserted here -->
+    </div>
   </body>
 </html>

@@ -24,6 +24,7 @@ export const DATE_STORAGE_KEY = "date_key";
 export const START_TIME_STORAGE_KEY = "start_key"; 
 export const END_TIME_STORAGE_KEY = "end_key";
 export const MAX_WATCH_TIME_MS = 1000 * 60 * 60; // 1h
+export const USER_URLS_KEY = 'user_urls';
 
 export async function readValue(key, browser) {
   const savedValue = await browser.storage.local.get(key);

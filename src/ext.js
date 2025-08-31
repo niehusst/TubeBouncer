@@ -7,7 +7,8 @@ import {
   MAX_WATCH_TIME_MS,
   readValue,
   writeValue,
-  getCurrentDate
+  getCurrentDate,
+  USER_URLS_KEY
 } from './store.js';
 
 export const intervalTime = 5 * 1000; // 5s
@@ -111,11 +112,21 @@ export async function spentTooLongOnUrl(urlKey, browser) {
  */
 export async function main({browser, window}) {
   const urlKey = getUrlKey(window);
-  await updateStoredData(urlKey, browser);
+  // Only decrease timer if current site matches user regex patterns
+  const userPatterns = await readValue(USER_URLS_KEY ,browser) || [];
+  const matches = userPatterns.some(pattern => {
+    try {
+      return new RegExp(pattern).test(urlKey);
+    } catch {
+      // Invalid regex, ignore
+      return false;
+    }
+  });
 
-  // gtfo if on yt and already watched too much
-  if (await spentTooLongOnUrl(urlKey, browser)) {
-
-    navigateAway(window);
+  if (matches) {
+    await updateStoredData(urlKey, browser);
+    if (await spentTooLongOnUrl(urlKey, browser)) {
+      navigateAway(window);
+    }
   }
 }

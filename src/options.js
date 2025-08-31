@@ -4,7 +4,9 @@ import {
   END_TIME_STORAGE_KEY,
   MAX_WATCH_TIME_MS,
   readValue,
-  sumWatchTime
+  sumWatchTime,
+  writeValue,
+  USER_URLS_KEY
 } from './store.js';
 
 export async function getRemainingWatchTime(urlKey, browser) {
@@ -36,7 +38,7 @@ export async function optMain({browser, document}) {
 
   const dayMap = (await readValue(DATE_STORAGE_KEY, browser)) || {};
   const sites = Object.keys(dayMap);
-  const body = document.getElementsByTagName("body")[0];
+  const body = document.getElementById("root");
   const hasVisitedSites = sites.length > 0;
   const hasPageUI = body.children.length > 0;
   // elements w/ dynamicLabel class marker have id w/ pattern "site_key::info_type"
@@ -44,6 +46,22 @@ export async function optMain({browser, document}) {
   const day = 'day';
   const watched = 'watched';
   const info = 'info';
+
+  // --- User URL input UI (now static in HTML) ---
+  const input = document.getElementById('user-url-list');
+  const saveBtn = document.getElementById('user-url-save');
+  if (input && saveBtn) {
+    // Load and display current URLs
+    const urls = await readValue(USER_URLS_KEY, browser) || [];
+    input.value = urls.join(',');
+
+    saveBtn.onclick = async () => {
+      const newUrls = input.value.split(',').map(u => u.trim()).filter(Boolean);
+      await writeValue(USER_URLS_KEY, newUrls, browser);
+      saveBtn.textContent = 'Saved!';
+      setTimeout(() => { saveBtn.textContent = 'Save'; }, 1000);
+    };
+  }
 
   if (!hasVisitedSites && !hasPageUI) {
     // <div id="${naKey}"><h2>Haven't watched any sites yet</h2></div>
