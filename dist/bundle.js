@@ -27,6 +27,7 @@
   const START_TIME_STORAGE_KEY = "start_key"; 
   const END_TIME_STORAGE_KEY = "end_key";
   const MAX_WATCH_TIME_MS = 1000 * 60 * 60; // 1h
+  const USER_URLS_KEY = 'user_urls';
 
   async function readValue(key, browser) {
     const savedValue = await browser.storage.local.get(key);
@@ -170,12 +171,22 @@
    */
   async function main({browser, window}) {
     const urlKey = getUrlKey(window);
-    await updateStoredData(urlKey, browser);
+    // Only decrease timer if current site matches user regex patterns
+    const userPatterns = await readValue(USER_URLS_KEY ,browser) || [];
+    const matches = userPatterns.some(pattern => {
+      try {
+        return new RegExp(pattern).test(urlKey);
+      } catch {
+        // Invalid regex, ignore
+        return false;
+      }
+    });
 
-    // gtfo if on yt and already watched too much
-    if (await spentTooLongOnUrl(urlKey, browser)) {
-
-      navigateAway(window);
+    if (matches) {
+      await updateStoredData(urlKey, browser);
+      if (await spentTooLongOnUrl(urlKey, browser)) {
+        navigateAway(window);
+      }
     }
   }
 

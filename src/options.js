@@ -53,13 +53,44 @@ export async function optMain({browser, document}) {
   if (input && saveBtn) {
     // Load and display current URLs
     const urls = await readValue(USER_URLS_KEY, browser) || [];
-    input.value = urls.join(',');
+
+    // Display current patterns in the list
+    const listDisplay = document.getElementById('user-url-list-display');
+    function renderPatternList(patterns) {
+      if (!listDisplay) return;
+      listDisplay.innerHTML = '';
+      patterns.forEach((pattern, idx) => {
+        const li = document.createElement('li');
+        li.style.display = 'flex';
+        li.style.alignItems = 'center';
+        li.style.marginBottom = '2px';
+        const span = document.createElement('span');
+        span.textContent = pattern;
+        li.appendChild(span);
+        const delBtn = document.createElement('button');
+        delBtn.textContent = '✕';
+        delBtn.title = 'Delete pattern';
+        delBtn.style.marginLeft = '8px';
+        delBtn.style.fontSize = '0.9em';
+        delBtn.style.padding = '0 4px';
+        delBtn.onclick = async () => {
+          const newPatterns = patterns.filter((_, i) => i !== idx);
+          await writeValue(USER_URLS_KEY, newPatterns, browser);
+          input.value = newPatterns.join(',');
+          renderPatternList(newPatterns);
+        };
+        li.appendChild(delBtn);
+        listDisplay.appendChild(li);
+      });
+    }
+    renderPatternList(urls);
 
     saveBtn.onclick = async () => {
       const newUrls = input.value.split(',').map(u => u.trim()).filter(Boolean);
       await writeValue(USER_URLS_KEY, newUrls, browser);
       saveBtn.textContent = 'Saved!';
       setTimeout(() => { saveBtn.textContent = 'Save'; }, 1000);
+      renderPatternList(newUrls);
     };
   }
 
